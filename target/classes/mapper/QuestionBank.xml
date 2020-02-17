@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sise.dao.QusetionBankDao">
+    <resultMap id="questionBankMap" type="com.sise.domain.QuestionBank">
+        <id property="qbId" column="qb_id"></id>
+        <result property="qbTitle" column="qb_title"></result>
+        <result property="qbA" column="qb_a"></result>
+        <result property="qbB" column="qb_b"></result>
+        <result property="qbC" column="qb_c"></result>
+        <result property="qbD" column="qb_d"></result>
+        <result property="qbAnswer" column="qb_answer"></result>
+        <result property="qbAnalyze" column="qb_analyze"></result>
+    </resultMap>
+
+    <!--将查询出来的所有题放入到题库中-->
+    <insert id="addquestionBank" parameterType="com.sise.domain.Single">
+        insert into questionbank(qb_title,qb_a,qb_b,qb_c,qb_d,qb_answer,qb_analyze) values(#{singleTitle},#{singleA},#{singleB},#{singleC},#{singleD},#{singleAnswer},#{singleAnalyze})
+    </insert>
+
+    <!--显示题库中所有的题-->
+    <select id="findAllquestionBank" resultMap="questionBankMap">
+        select * from questionbank
+    </select>
+
+    <!--统计题库公有多少题-->
+    <select id="totalquestionBank" resultType="int">
+        select count(*) from questionbank;
+    </select>
+
+    <!--根据指定的页数，来显示题库中的题-->
+    <select id="findByquestionBank" parameterType="int" resultMap="questionBankMap">
+        select * from questionbank order by qb_id desc limit #{arg0},#{arg1};
+    </select>
+
+    <!--删除题库中的单条试题-->
+    <delete id="deleteId" parameterType="int">
+        delete from questionbank where qb_id = #{qbId};
+    </delete>
+</mapper>

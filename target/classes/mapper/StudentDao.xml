@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sise.dao.StudentDao">
+    <resultMap id="studentMap" type="com.sise.domain.student.Student">
+        <id property="stuId" column="stu_id"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="stuPwd" column="stu_pwd"></result>
+    </resultMap>
+
+    <!--登录时，校验账号和密码是否正确-->
+    <select id="checkStudent" resultType="int" parameterType="com.sise.domain.student.Student">
+        select count(*) from student where stu_name = #{stuName} and stu_pwd = #{stuPwd};
+    </select>
+
+    <!--登录时，获取学生信息-->
+    <select id="findStudent" resultMap="studentMap" parameterType="com.sise.domain.student.Student">
+        select * from student where stu_name = #{stuName} and stu_pwd = #{stuPwd};
+    </select>
+
+    <!--用户名是否已经被使用-->
+    <select id="checkName" parameterType="String" resultType="int">
+        select count(*) from student where stu_name = #{username};
+    </select>
+
+    <!--学生注册账户-->
+    <insert id="register" parameterType="com.sise.domain.student.Student">
+        insert into student(stu_name,stu_pwd) values(#{stuName},#{stuPwd});
+    </insert>
+</mapper>

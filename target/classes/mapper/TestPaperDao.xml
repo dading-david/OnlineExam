@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sise.dao.TestPaperDao">
+    <!--将实体类中的属性名与数据表中的字段名对应起来--><!--一对多的封装-->
+        <resultMap id="testPaperMap" type="com.sise.domain.TestPaper">
+            <id property="tpId" column="tp_id"></id>
+            <result property="teacherId" column="teacher_id"></result>
+            <result property="tpName" column="tp_name"></result>
+            <result property="tpStartTime" column="tp_starttime"></result>
+            <result property="tpTimeLength" column="tp_timelength"></result>
+            <result property="tpType" column="tp_type"></result>
+        <collection property="single" ofType="com.sise.domain.Single">       <!-- ofType中的是实体类的名称，property中的是变量名-->
+            <id property="singleId" column="single_id"></id>
+            <result property="tpId" column="tp_id"></result>
+            <result property="singleTitle" column="single_title"></result>
+            <result property="singleA" column="single_a"></result>
+            <result property="singleB" column="single_b"></result>
+            <result property="singleC" column="single_c"></result>
+            <result property="singleD" column="single_d"></result>
+            <result property="singleAnswer" column="single_answer"></result>
+            <result property="singleAnalyze" column="single_analyze"></result>
+        </collection>
+    </resultMap>
+
+    <!--添加试卷-->
+    <insert id="addPaper" parameterType="com.sise.domain.TestPaper">
+        insert into testpaper(teacher_id,tp_name,tp_starttime,tp_timelength,tp_type) values(#{teacherId},#{tpName},#{tpStartTime},#{tpTimeLength},#{tpType});
+    </insert>
+
+    <!--遍历所有试卷-->
+    <select id="findAllPaper" resultMap="testPaperMap">
+        select * from testpaper;
+    </select>
+    
+    <!--试卷的总数-->
+    <select id="findTotalPaper" resultType="int">
+        select count(*) from testpaper;
+    </select>
+    
+    <!--分页显示试卷-->
+    <select id="findByPaper" parameterType="Integer" resultMap="testPaperMap">
+        select * from testpaper order by tp_id desc limit #{arg0} , #{arg1};
+    </select>
+
+    <!--获取最新插入的试卷的id-->
+    <select id="gainId" resultType="int">
+        select tp_id from testpaper order by tp_id desc limit 1;
+    </select>
+
+    <!--将试卷加入题库之后，删除试卷-->
+    <delete id="deletePaper" parameterType="int">
+        delete from testpaper where tp_id = #{id};
+    </delete>
+</mapper>

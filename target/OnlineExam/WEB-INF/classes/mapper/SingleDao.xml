@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sise.dao.SingleDao">
+    <!--将实体类中的属性名与数据表中的字段名对应起来--><!--一,多对一的封装-->
+    <resultMap id="singleMap" type="com.sise.domain.Single">
+        <id property="singleId" column="single_id"></id>
+        <result property="tpId" column="tp_id"></result>
+        <result property="singleTitle" column="single_title"></result>
+        <result property="singleA" column="single_a"></result>
+        <result property="singleB" column="single_b"></result>
+        <result property="singleC" column="single_c"></result>
+        <result property="singleD" column="single_d"></result>
+        <result property="singleAnswer" column="single_answer"></result>
+        <result property="singleAnalyze" column="single_analyze"></result>
+        <!--<association property="testpaper" column="tp_id" javaType="com.sise.domain.TestPaper">       &lt;!&ndash;testpaper:表名，tp_id：外键&ndash;&gt;
+            <id property="tpId" column="tp_id"></id>
+            <result property="tpName" column="tp_name"></result>
+            <result property="tpStartTime" column="tp_starttime"></result>
+            <result property="tpTimeLength" column="tp_timelength"></result>
+            <result property="tpType" column="tp_type"></result>
+        </association>-->
+    </resultMap>
+
+    <!--完善试卷，向最新的试卷添加试题-->
+    <insert id="addQuestion" parameterType="com.sise.domain.Single">
+        insert into single(tp_id,single_title,single_a,single_b,single_c,single_d,single_answer,single_analyze) values(#{tpId},#{singleTitle},#{singleA},#{singleB},#{singleC},#{singleD},#{singleAnswer},#{singleAnalyze});
+    </insert>
+
+    <!--获取这套试卷所关联的题目-->
+    <select id="papersingles" parameterType="int" resultMap="singleMap">
+        select * from single where tp_id =  #{id};
+    </select>
+
+    <!--当single表中相关试题存入到题库中，删除single表中的试题-->
+    <delete id="deletePaper" parameterType="int">
+        delete from single where tp_id = #{id};
+    </delete>
+
+    <!--分页功能-->
+    <select id="findByAPaper" parameterType="int" resultMap="singleMap">
+        select * from single where tp_id = #{arg0} limit #{arg1},#{arg2};
+    </select>
+
+    <!--统计一套试卷中有多少题目-->
+    <select id="totalCount" resultType="int" parameterType="int">
+        select count(*) from single where tp_id = #{id};
+    </select>
+</mapper>
